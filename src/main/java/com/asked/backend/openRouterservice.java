@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class openRouterservice {
 
-    private static final String API_KEY = "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";
+    private static final String API_KEY = "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";
     private static final String API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
     public static String getFlashcardsFromText(String inputText) throws IOException {
@@ -25,7 +25,6 @@ public class openRouterservice {
 
         Map<String, Object> body = new HashMap<>();
         body.put("model", "qwen/qwen3-8b-04-28");
-// You can change to mistralai/mixtral or anthropic/claude-3-sonnet
         body.put("messages", new Object[]{message});
         body.put("temperature", 0.7);
 
@@ -52,4 +51,43 @@ public class openRouterservice {
             }
         }
     }
+
+    public static String summarizeText(String inputText) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+        ObjectMapper mapper = new ObjectMapper();
+
+        Map<String, Object> message = new HashMap<>();
+        message.put("role", "user");
+        message.put("content", inputText);
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("model", "qwen/qwen3-8b-04-28");
+        body.put("messages", new Object[]{message});
+        body.put("temperature", 0.7);
+
+        RequestBody requestBody = RequestBody.create(
+                mapper.writeValueAsString(body),
+                MediaType.parse("application/json")
+        );
+
+        Request request = new Request.Builder()
+                .url("https://openrouter.ai/api/v1/chat/completions")
+                .header("Authorization", "Bearer " + API_KEY)
+                .header("HTTP-Referer", "https://asked.local")
+                .header("X-Title", "AskEd")
+                .post(requestBody)
+                .build();
+
+
+
+        try (Response response = client.newCall(request).execute()) {
+            if (response.isSuccessful()) {
+                Map<String, Object> resBody = mapper.readValue(response.body().string(), Map.class);
+                return (String) ((Map)((Map)((java.util.List) resBody.get("choices")).get(0)).get("message")).get("content");
+            } else {
+                throw new IOException("OpenRouter Error: " + response.body().string());
+            }
+        }
+    }
+
 }

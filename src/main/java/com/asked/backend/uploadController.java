@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @RestController
 public class uploadController {
 
@@ -141,6 +142,37 @@ public class uploadController {
         }
     }
 
+    @PostMapping("/summarize")
+    public ResponseEntity<String> summarize(
+            @RequestParam(required = false) String filename,
+            @RequestParam(required = false) String text,
+            @RequestParam(required = false) String prompt
+    ) {
+        try {
+            String content = "";
+
+            if (filename != null && !filename.isEmpty()) {
+                content = new String(Files.readAllBytes(Paths.get("uploads/" + filename)));
+            } else if (text != null && !text.isEmpty()) {
+                content = text;
+            } else {
+                return ResponseEntity.badRequest().body("No input provided.");
+            }
+
+            String finalPrompt = (prompt != null && !prompt.isEmpty())
+                    ? prompt
+                    : "Summarize the following in simple words:";
+
+            String fullPrompt = finalPrompt + "\n\n" + content;
+
+            String summary =openRouterservice.summarizeText(fullPrompt);
+            return ResponseEntity.ok(summary);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Summarization failed.");
+        }
+    }
 
 
 
