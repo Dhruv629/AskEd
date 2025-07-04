@@ -1,5 +1,7 @@
 package com.asked.backend;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,12 +29,20 @@ public class uploadController {
             }
 
             String filePath = UPLOAD_DIR + file.getOriginalFilename();
-            System.out.println("Saving to: " + filePath);
-
             file.transferTo(new File(filePath));
 
-            System.out.println("Uploaded file: " + file.getOriginalFilename());
-            return ResponseEntity.ok("PDF uploaded successfully: " + file.getOriginalFilename());
+
+            File uploadedFile = new File(filePath);
+            PDDocument document = PDDocument.load(uploadedFile);
+            PDFTextStripper stripper = new PDFTextStripper();
+            String text = stripper.getText(document);
+            document.close();
+
+            System.out.println("PDF Contents:\n" + text);
+
+            return ResponseEntity.ok("Extracted text:\n" + text);
+
+
         } catch (IOException e) {
             e.printStackTrace(); // 🟡 This will print the actual error in IntelliJ console
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file");
