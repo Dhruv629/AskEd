@@ -9,6 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class uploadController {
@@ -34,7 +36,7 @@ public class uploadController {
             System.out.println("Uploaded file: " + file.getOriginalFilename());
             return ResponseEntity.ok("File uploaded successfully: " + file.getOriginalFilename());
         } catch (IOException e) {
-            e.printStackTrace(); // 🟡 This will print the actual error in IntelliJ console
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file");
         }
     }
@@ -57,6 +59,37 @@ public class uploadController {
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to extract text");
+        }
+    }
+
+    @GetMapping("/flashcards")
+    public ResponseEntity<List<flashcard>> generateFlashcards(@RequestParam("filename") String filename) {
+        File file = new File(UPLOAD_DIR + filename);
+
+        if (!file.exists()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        try {
+            PDDocument document = PDDocument.load(file);
+            PDFTextStripper stripper = new PDFTextStripper();
+            String text = stripper.getText(document);
+            document.close();
+
+            List<flashcard> flashcards = new ArrayList<>();
+
+            // Basic sentence split logic (enhance later)
+            String[] sentences = text.split("\\. ");
+            for (String sentence : sentences) {
+                if (sentence.length() > 30) {
+                    flashcards.add(new flashcard("What is: " + sentence.substring(0, 20) + "...?", sentence.trim()));
+                }
+            }
+
+            return ResponseEntity.ok(flashcards);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
