@@ -9,6 +9,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -115,7 +118,29 @@ public class uploadController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("AI flashcard generation failed");
         }
+
+
+
     }
+
+    @PostMapping("/save-flashcards")
+    public ResponseEntity<String> saveFlashcards(@RequestBody String flashcardsJson) {
+        try {
+            // Generate a unique filename with timestamp
+            String filename = "flashcards_" + System.currentTimeMillis() + ".json";
+            Path path = Paths.get("flashcards/" + filename);
+
+            // Save JSON string to file
+            Files.write(path, flashcardsJson.getBytes());
+
+            return ResponseEntity.ok("Flashcards saved as " + filename);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to save flashcards");
+        }
+    }
+
 
 
 
