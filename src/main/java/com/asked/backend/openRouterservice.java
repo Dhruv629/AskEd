@@ -37,7 +37,7 @@ public class openRouterservice {
         Request request = new Request.Builder()
                 .url(API_URL)
                 .header("Authorization", "Bearer " + API_KEY)
-                .header("HTTP-Referer", "https://your-app-name.com") // Set any URL you want
+                .header("HTTP-Referer", "https://your-app-name.com")
                 .header("X-Title", "AskEd")
                 .post(requestBody)
                 .build();
