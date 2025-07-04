@@ -91,7 +91,32 @@ public class uploadController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
+
     }
+
+    @GetMapping("/ai-flashcards")
+    public ResponseEntity<String> aiFlashcards(@RequestParam("filename") String filename) {
+        File file = new File(UPLOAD_DIR + filename);
+
+        if (!file.exists()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("File not found");
+        }
+
+        try {
+            PDDocument document = PDDocument.load(file);
+            PDFTextStripper stripper = new PDFTextStripper();
+            String text = stripper.getText(document);
+            document.close();
+
+            String aiResponse = openRouterservice.getFlashcardsFromText(text);
+            return ResponseEntity.ok(aiResponse);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("AI flashcard generation failed");
+        }
+    }
+
 
 
 }
