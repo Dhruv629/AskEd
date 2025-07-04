@@ -31,21 +31,34 @@ public class uploadController {
             String filePath = UPLOAD_DIR + file.getOriginalFilename();
             file.transferTo(new File(filePath));
 
-
-            File uploadedFile = new File(filePath);
-            PDDocument document = PDDocument.load(uploadedFile);
-            PDFTextStripper stripper = new PDFTextStripper();
-            String text = stripper.getText(document);
-            document.close();
-
-            System.out.println("PDF Contents:\n" + text);
-
-            return ResponseEntity.ok("Extracted text:\n" + text);
-
-
+            System.out.println("Uploaded file: " + file.getOriginalFilename());
+            return ResponseEntity.ok("File uploaded successfully: " + file.getOriginalFilename());
         } catch (IOException e) {
             e.printStackTrace(); // 🟡 This will print the actual error in IntelliJ console
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file");
         }
     }
+
+    @GetMapping("/extract")
+    public ResponseEntity<String> extractText(@RequestParam("filename") String filename) {
+        File file = new File(UPLOAD_DIR + filename);
+
+        if (!file.exists()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("File not found: " + filename);
+        }
+
+        try {
+            PDDocument document = PDDocument.load(file);
+            PDFTextStripper stripper = new PDFTextStripper();
+            String text = stripper.getText(document);
+            document.close();
+
+            return ResponseEntity.ok("Extracted text:\n" + text);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to extract text");
+        }
+    }
+
+
 }
