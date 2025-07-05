@@ -150,51 +150,15 @@ public class uploadController {
     }
 
     @PostMapping("/summarize")
-    public ResponseEntity<String> summarize(
-            @RequestParam(required = false) String filename,
-            @RequestParam(required = false) String text,
-            @RequestParam(required = false) String prompt
-    ) {
+    public ResponseEntity<?> summarize(@RequestBody SummarizeRequest request) {
         try {
-            String content = "";
-
-            if (filename != null && !filename.isEmpty()) {
-                content = new String(Files.readAllBytes(Paths.get("uploads/" + filename)));
-            } else if (text != null && !text.isEmpty()) {
-                content = text;
-            } else {
-                return ResponseEntity.badRequest().body("No input provided.");
-            }
-
-            String finalPrompt = (prompt != null && !prompt.isEmpty())
-                    ? prompt
-                    : "Summarize the following in simple words:";
-
-            String fullPrompt = finalPrompt + "\n\n" + content;
-
-            String summary =openRouterservice.summarizeText(fullPrompt);
+            String summary = openRouterservice.summarizeText(request.getInputText());
             return ResponseEntity.ok(summary);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Summarization failed.");
-        }
-    }
-
-    @PostMapping("/summarize-json")
-    public ResponseEntity<?> summarizeJson(@RequestBody SummarizeRequest request) {
-        try {
-            String result = openRouterservice.summarizeText(request.getText());
-            return ResponseEntity.ok().body(Map.of("summary", result));
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Summarization failed: " + e.getMessage()));
+                    .body("{\"error\":\"Summarization failed: " + e.getMessage() + "\"}");
         }
     }
-
-
-
-
 
 
 }

@@ -1,14 +1,13 @@
 package com.asked.backend.dto;
 
 public class SummarizeRequest {
-    private String text;
+    private String inputText;
 
-    // Getter and Setter
-    public String getText() {
-        return text;
+    public String getInputText() {
+        return inputText;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setInputText(String inputText) {
+        this.inputText = inputText;
     }
 }
