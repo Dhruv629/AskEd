@@ -2,17 +2,22 @@ package com.asked.backend;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Service
 public class openRouterservice {
 
-    private static final String API_KEY = "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";
+    @Value("${openrouter.api.key}")
+    private String apiKey;
+
     private static final String API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
-    public static String getFlashcardsFromText(String inputText) throws IOException {
+    public  String getFlashcardsFromText(String inputText) throws IOException {
         OkHttpClient client = new OkHttpClient();
         ObjectMapper mapper = new ObjectMapper();
 
@@ -35,7 +40,7 @@ public class openRouterservice {
 
         Request request = new Request.Builder()
                 .url(API_URL)
-                .header("Authorization", "Bearer " + API_KEY)
+                .header("Authorization", "Bearer " + apiKey)
                 .header("HTTP-Referer", "https://your-app-name.com")
                 .header("X-Title", "AskEd")
                 .post(requestBody)
@@ -52,7 +57,7 @@ public class openRouterservice {
         }
     }
 
-    public static String summarizeText(String inputText) throws IOException {
+    public  String summarizeText(String inputText) throws IOException {
         OkHttpClient client = new OkHttpClient();
         ObjectMapper mapper = new ObjectMapper();
 
@@ -72,7 +77,7 @@ public class openRouterservice {
 
         Request request = new Request.Builder()
                 .url("https://openrouter.ai/api/v1/chat/completions")
-                .header("Authorization", "Bearer " + API_KEY)
+                .header("Authorization", "Bearer " + apiKey)
                 .header("HTTP-Referer", "https://asked.local")
                 .header("X-Title", "AskEd")
                 .post(requestBody)

@@ -34,3 +34,6 @@ build/
 
 
 /uploads/
+.env
+config.json
+src/main/resources/application.properties

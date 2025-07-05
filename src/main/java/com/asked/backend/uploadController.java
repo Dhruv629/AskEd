@@ -2,10 +2,13 @@ package com.asked.backend;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import com.asked.backend.dto.SummarizeRequest;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -14,10 +17,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 
 
 @RestController
 public class uploadController {
+    @Autowired
+    private openRouterservice openRouterservice;
 
     private static final String UPLOAD_DIR = System.getProperty("user.dir") + "/uploads/";
 
@@ -173,6 +180,20 @@ public class uploadController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Summarization failed.");
         }
     }
+
+    @PostMapping("/summarize-json")
+    public ResponseEntity<?> summarizeJson(@RequestBody SummarizeRequest request) {
+        try {
+            String result = openRouterservice.summarizeText(request.getText());
+            return ResponseEntity.ok().body(Map.of("summary", result));
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Summarization failed: " + e.getMessage()));
+        }
+    }
+
+
+
 
 
 
