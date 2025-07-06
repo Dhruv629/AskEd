@@ -106,41 +106,24 @@ public class uploadController {
 
     }
 
-    @GetMapping("/ai-flashcards")
-    public ResponseEntity<String> aiFlashcards(@RequestParam("filename") String filename) {
-        File file = new File(UPLOAD_DIR + filename);
-
-        if (!file.exists()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("File not found");
-        }
-
-        try {
-            PDDocument document = PDDocument.load(file);
-            PDFTextStripper stripper = new PDFTextStripper();
-            String text = stripper.getText(document);
-            document.close();
-
-            String aiResponse = openRouterservice.getFlashcardsFromText(text);
-            return ResponseEntity.ok(aiResponse);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("AI flashcard generation failed");
-        }
-
-
-
-    }
 
     @PostMapping("/save-flashcards")
-    public ResponseEntity<String> saveFlashcards(@RequestBody String flashcardsJson) {
-        try {
-            // Generate a unique filename with timestamp
-            String filename = "flashcards_" + System.currentTimeMillis() + ".json";
-            Path path = Paths.get("flashcards/" + filename);
+    public ResponseEntity<String> saveFlashcards(
+            @RequestParam(value = "filename", required = false) String filename,
+            @RequestBody String flashcardsJson) {
 
-            // Save JSON string to file
-            Files.write(path, flashcardsJson.getBytes());
+        try {
+            Path dirPath = Paths.get("flashcards");
+            Files.createDirectories(dirPath);
+
+
+            if (filename == null || filename.trim().isEmpty()) {
+                filename = "flashcards_" + System.currentTimeMillis();
+            }
+            filename = filename.endsWith(".json") ? filename : filename + ".json";
+
+            Path filePath = dirPath.resolve(filename);
+            Files.write(filePath, flashcardsJson.getBytes());
 
             return ResponseEntity.ok("Flashcards saved as " + filename);
         } catch (IOException e) {
@@ -150,28 +133,67 @@ public class uploadController {
         }
     }
 
-    @PostMapping("/summarize")
-    public ResponseEntity<?> summarize(@RequestBody SummarizeRequest request) {
+
+    @GetMapping("/list-flashcards")
+    public ResponseEntity<List<String>> listFlashcards() {
         try {
-            String summary = openRouterservice.summarizeText(request.getInputText());
-            return ResponseEntity.ok(summary);
-        } catch (IOException e) {
+            File folder = new File("flashcards");
+            if (!folder.exists() || !folder.isDirectory()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(List.of("Flashcards folder not found"));
+            }
+
+            String[] files = folder.list((dir, name) -> name.endsWith(".json"));
+
+            if (files == null || files.length == 0) {
+                return ResponseEntity.ok(List.of()); // Return empty list if no files
+            }
+
+            return ResponseEntity.ok(List.of(files));
+        } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("{\"error\":\"Summarization failed: " + e.getMessage() + "\"}");
+                    .body(List.of("Failed to list flashcard files"));
         }
     }
 
-    @PostMapping("/quiz")
-    public ResponseEntity<?> generateQuiz(@RequestBody QuizRequest request) {
+    @GetMapping("/flashcards/view")
+    public ResponseEntity<?> viewSavedFlashcards(@RequestParam("filename") String filename) {
+        Path path = Paths.get("flashcards/" + filename);
+
+        if (!Files.exists(path)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("File not found: " + filename);
+        }
+
         try {
-            String quiz = openRouterservice.generateQuizFromText(request.getInputText());
-            return ResponseEntity.ok(quiz);
+            String content = Files.readString(path);
+            return ResponseEntity.ok(content);
         } catch (IOException e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("{\"error\":\"Quiz generation failed: " + e.getMessage() + "\"}");
+                    .body("Failed to read file: " + filename);
         }
     }
 
 
+    @DeleteMapping("/flashcards/delete")
+    public ResponseEntity<String> deleteFlashcard(@RequestParam("filename") String filename) {
+        Path path = Paths.get("flashcards/" + filename);
+
+        if (!Files.exists(path)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("File not found: " + filename);
+        }
+
+        try {
+            Files.delete(path);
+            return ResponseEntity.ok("Deleted flashcard file: " + filename);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to delete file: " + filename);
+        }
+    }
 
 }
