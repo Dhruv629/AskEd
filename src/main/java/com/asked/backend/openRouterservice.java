@@ -57,7 +57,7 @@ public class openRouterservice {
         }
     }
 
-    public  String summarizeText(String inputText) throws IOException {
+    public String summarizeText(String inputText) throws IOException {
         OkHttpClient client = new OkHttpClient();
         ObjectMapper mapper = new ObjectMapper();
 
@@ -94,5 +94,45 @@ public class openRouterservice {
             }
         }
     }
+
+    public String generateQuizFromText(String inputText) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+        ObjectMapper mapper = new ObjectMapper();
+
+        String prompt = "Create 5 multiple-choice quiz questions from the following text. " +
+                "Each question should be in JSON format with 'question', 'options' (array), and 'answer' fields.\n\n" + inputText;
+
+        Map<String, Object> message = new HashMap<>();
+        message.put("role", "user");
+        message.put("content", prompt);
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("model", "qwen/qwen3-8b-04-28");
+        body.put("messages", new Object[]{message});
+        body.put("temperature", 0.7);
+
+        RequestBody requestBody = RequestBody.create(
+                mapper.writeValueAsString(body),
+                MediaType.parse("application/json")
+        );
+
+        Request request = new Request.Builder()
+                .url("https://openrouter.ai/api/v1/chat/completions")
+                .header("Authorization", "Bearer " + apiKey)
+                .header("HTTP-Referer", "https://asked.local")
+                .header("X-Title", "AskEd")
+                .post(requestBody)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (response.isSuccessful()) {
+                Map<String, Object> resBody = mapper.readValue(response.body().string(), Map.class);
+                return (String) ((Map)((Map)((java.util.List) resBody.get("choices")).get(0)).get("message")).get("content");
+            } else {
+                throw new IOException("OpenRouter Error: " + response.body().string());
+            }
+        }
+    }
+
 
 }

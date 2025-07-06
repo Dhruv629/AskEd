@@ -1,5 +1,6 @@
 package com.asked.backend;
 
+import com.asked.backend.dto.QuizRequest;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -159,6 +160,18 @@ public class uploadController {
                     .body("{\"error\":\"Summarization failed: " + e.getMessage() + "\"}");
         }
     }
+
+    @PostMapping("/quiz")
+    public ResponseEntity<?> generateQuiz(@RequestBody QuizRequest request) {
+        try {
+            String quiz = openRouterservice.generateQuizFromText(request.getInputText());
+            return ResponseEntity.ok(quiz);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"error\":\"Quiz generation failed: " + e.getMessage() + "\"}");
+        }
+    }
+
 
 
 }
