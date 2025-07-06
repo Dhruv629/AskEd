@@ -2,6 +2,7 @@ package com.asked.backend.controller;
 
 import com.asked.backend.dto.QuizRequest;
 import com.asked.backend.dto.SummarizeRequest;
+import com.asked.backend.model.flashcard;
 import com.asked.backend.services.openRouterservice;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -12,6 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.asked.backend.utils.fileStoragePaths.UPLOAD_DIR;
 
 @RestController
 @RequestMapping("/ai")
@@ -30,17 +35,6 @@ public class aiController {
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("{\"error\":\"Summarization failed: " + e.getMessage() + "\"}");
-        }
-    }
-
-    @PostMapping("/quiz")
-    public ResponseEntity<?> generateQuiz(@RequestBody QuizRequest request) {
-        try {
-            String quiz = openRouterservice.generateQuizFromText(request.getInputText());
-            return ResponseEntity.ok(quiz);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("{\"error\":\"Quiz generation failed: " + e.getMessage() + "\"}");
         }
     }
 
@@ -66,4 +60,16 @@ public class aiController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("AI flashcard generation failed");
         }
     }
+
+    @PostMapping("/quiz")
+    public ResponseEntity<?> generateQuiz(@RequestBody QuizRequest request) {
+        try {
+            String quizJson = openRouterservice.generateQuizFromText(request.getInputText());
+            return ResponseEntity.ok(quizJson);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"error\":\"Quiz generation failed: " + e.getMessage() + "\"}");
+        }
+    }
+
 }

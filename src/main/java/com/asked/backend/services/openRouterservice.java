@@ -95,12 +95,14 @@ public class openRouterservice {
         }
     }
 
+
     public String generateQuizFromText(String inputText) throws IOException {
         OkHttpClient client = new OkHttpClient();
         ObjectMapper mapper = new ObjectMapper();
 
-        String prompt = "Create 5 multiple-choice quiz questions from the following text. " +
-                "Each question should be in JSON format with 'question', 'options' (array), and 'answer' fields.\n\n" + inputText;
+        String prompt = "Generate 5 multiple choice quiz questions from the following text. " +
+                "Each question should be in JSON format with fields: 'question', 'options' (as a list), and 'answer'. " +
+                "Return the result as a JSON array only.\n\n" + inputText;
 
         Map<String, Object> message = new HashMap<>();
         message.put("role", "user");
