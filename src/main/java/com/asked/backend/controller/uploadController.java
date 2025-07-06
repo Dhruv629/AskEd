@@ -1,6 +1,7 @@
-package com.asked.backend;
+package com.asked.backend.controller;
 
-import com.asked.backend.dto.QuizRequest;
+import com.asked.backend.model.flashcard;
+import com.asked.backend.services.openRouterservice;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import com.asked.backend.dto.SummarizeRequest;
 
 
 import java.io.File;
@@ -18,8 +18,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 
 
 @RestController

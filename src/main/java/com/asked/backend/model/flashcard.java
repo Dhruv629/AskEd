@@ -1,4 +1,4 @@
-package com.asked.backend;
+package com.asked.backend.model;
 
 public class flashcard {
     private String question;

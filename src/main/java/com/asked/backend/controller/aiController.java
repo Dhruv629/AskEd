@@ -1,7 +1,8 @@
-package com.asked.backend;
+package com.asked.backend.controller;
 
 import com.asked.backend.dto.QuizRequest;
 import com.asked.backend.dto.SummarizeRequest;
+import com.asked.backend.services.openRouterservice;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.beans.factory.annotation.Autowired;
