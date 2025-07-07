@@ -50,3 +50,8 @@ uploads/
 flashcards/
 quizzes/
 
+# Spring Boot sensitive config
+/src/main/resources/application.properties
+/src/main/resources/application.yml
+
+

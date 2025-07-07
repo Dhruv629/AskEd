@@ -34,10 +34,13 @@ public class aiController {
             String summary = openRouterservice.summarizeText(request.getInputText(), "Summarize this concisely in 3-4 lines.");
             return ResponseEntity.ok(summary);
         } catch (IOException e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("{\"error\":\"Summarization failed: " + e.getMessage() + "\"}");
         }
+
     }
+
 
 
     @PostMapping("/custom-summarize")
@@ -46,10 +49,13 @@ public class aiController {
             String summary = openRouterservice.summarizeText(request.getInputText(), request.getPrompt());
             return ResponseEntity.ok(summary);
         } catch (IOException e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("{\"error\":\"Custom summarization failed: " + e.getMessage() + "\"}");
+                    .body("{\"error\":\"Summarization failed: " + e.getMessage() + "\"}");
         }
+
     }
+
 
     @GetMapping("/flashcards")
     public ResponseEntity<String> aiFlashcards(@RequestParam("filename") String filename) {
