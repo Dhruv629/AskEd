@@ -57,13 +57,22 @@ public class openRouterservice {
         }
     }
 
-    public String summarizeText(String inputText) throws IOException {
+    public String summarizeText(String inputText, String customPrompt) throws IOException {
         OkHttpClient client = new OkHttpClient();
         ObjectMapper mapper = new ObjectMapper();
 
+        // 🔹 Combine prompt with input
+        String content;
+        if (customPrompt != null && !customPrompt.trim().isEmpty()) {
+            content = customPrompt.trim() + "\n\n" + inputText;
+        } else {
+            content = inputText;
+        }
+
+        // 🔹 Prepare OpenRouter message payload
         Map<String, Object> message = new HashMap<>();
         message.put("role", "user");
-        message.put("content", inputText);
+        message.put("content", content);
 
         Map<String, Object> body = new HashMap<>();
         body.put("model", "qwen/qwen3-8b-04-28");
@@ -82,8 +91,6 @@ public class openRouterservice {
                 .header("X-Title", "AskEd")
                 .post(requestBody)
                 .build();
-
-
 
         try (Response response = client.newCall(request).execute()) {
             if (response.isSuccessful()) {

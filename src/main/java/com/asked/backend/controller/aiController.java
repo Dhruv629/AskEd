@@ -1,5 +1,6 @@
 package com.asked.backend.controller;
 
+import com.asked.backend.dto.CustomSummarizeRequest;
 import com.asked.backend.dto.QuizRequest;
 import com.asked.backend.dto.SummarizeRequest;
 import com.asked.backend.model.flashcard;
@@ -30,11 +31,23 @@ public class aiController {
     @PostMapping("/summarize")
     public ResponseEntity<?> summarize(@RequestBody SummarizeRequest request) {
         try {
-            String summary = openRouterservice.summarizeText(request.getInputText());
+            String summary = openRouterservice.summarizeText(request.getInputText(), "Summarize this concisely in 3-4 lines.");
             return ResponseEntity.ok(summary);
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("{\"error\":\"Summarization failed: " + e.getMessage() + "\"}");
+        }
+    }
+
+
+    @PostMapping("/custom-summarize")
+    public ResponseEntity<?> customSummarize(@RequestBody CustomSummarizeRequest request) {
+        try {
+            String summary = openRouterservice.summarizeText(request.getInputText(), request.getPrompt());
+            return ResponseEntity.ok(summary);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"error\":\"Custom summarization failed: " + e.getMessage() + "\"}");
         }
     }
 

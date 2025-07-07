@@ -13,11 +13,6 @@ target/
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
 
 ### NetBeans ###
 /nbproject/private/
@@ -29,11 +24,29 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### VS Code ###
+
+*.class
+*.jar
+
+# IntelliJ / VSCode
+.idea/
+*.iml
+*.ipr
+*.iws
 .vscode/
 
 
-/uploads/
-.env
-config.json
-src/main/resources/application.properties
+# --------------------
+# React Frontend
+# --------------------
+frontend/node_modules/
+frontend/build/
+frontend/.env
+
+# --------------------
+# Runtime Data (optional)
+# --------------------
+uploads/
+flashcards/
+quizzes/
+
