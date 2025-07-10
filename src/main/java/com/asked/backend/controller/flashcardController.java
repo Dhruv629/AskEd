@@ -1,6 +1,7 @@
 package com.asked.backend.controller;
 
 import com.asked.backend.model.flashcard;
+import com.asked.backend.model.flashcardRepository;
 import com.asked.backend.services.openRouterservice;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -26,8 +27,14 @@ public class flashcardController {
     @Autowired
     private openRouterservice openRouterservice;
 
+    @Autowired
+    private flashcardRepository flashcardRepository;
 
+    // ===================== FILE-BASED ENDPOINTS =====================
 
+    /**
+     * Save flashcards to file (legacy)
+     */
     @PostMapping("/save-flashcards")
     public ResponseEntity<String> saveFlashcards(
             @RequestParam(value = "filename", required = false) String filename,
@@ -55,6 +62,9 @@ public class flashcardController {
     }
 
 
+    /**
+     * List flashcard files (legacy)
+     */
     @GetMapping("/list-flashcards")
     public ResponseEntity<List<String>> listFlashcards() {
         try {
@@ -78,6 +88,9 @@ public class flashcardController {
         }
     }
 
+    /**
+     * View saved flashcards from file (legacy)
+     */
     @GetMapping("/flashcards/view")
     public ResponseEntity<?> viewSavedFlashcards(@RequestParam("filename") String filename) {
         Path path = Paths.get("flashcards/" + filename);
@@ -98,6 +111,9 @@ public class flashcardController {
     }
 
 
+    /**
+     * Delete flashcard file (legacy)
+     */
     @DeleteMapping("/flashcards/delete")
     public ResponseEntity<String> deleteFlashcard(@RequestParam("filename") String filename) {
         Path path = Paths.get("flashcards/" + filename);
@@ -115,5 +131,46 @@ public class flashcardController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Failed to delete file: " + filename);
         }
+    }
+
+    // ===================== DATABASE-BACKED ENDPOINTS =====================
+
+    /**
+     * Save a list of flashcards to the database
+     */
+    @PostMapping("/db/flashcards")
+    public ResponseEntity<List<flashcard>> saveFlashcardsToDb(@RequestBody List<flashcard> flashcards) {
+        List<flashcard> saved = flashcardRepository.saveAll(flashcards);
+        return ResponseEntity.ok(saved);
+    }
+
+    /**
+     * Get all flashcards from the database
+     */
+    @GetMapping("/db/flashcards")
+    public ResponseEntity<List<flashcard>> getAllFlashcardsFromDb() {
+        return ResponseEntity.ok(flashcardRepository.findAll());
+    }
+
+    /**
+     * Get a single flashcard by ID from the database
+     */
+    @GetMapping("/db/flashcards/{id}")
+    public ResponseEntity<?> getFlashcardById(@PathVariable Long id) {
+        return flashcardRepository.findById(id)
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Flashcard not found"));
+    }
+
+    /**
+     * Delete a flashcard by ID from the database
+     */
+    @DeleteMapping("/db/flashcards/{id}")
+    public ResponseEntity<String> deleteFlashcardById(@PathVariable Long id) {
+        if (!flashcardRepository.existsById(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Flashcard not found");
+        }
+        flashcardRepository.deleteById(id);
+        return ResponseEntity.ok("Flashcard deleted");
     }
 }
