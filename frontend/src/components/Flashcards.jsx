@@ -30,22 +30,22 @@ const Flashcards = () => {
   };
 
   return (
-    <div className="p-6 bg-white/80 border rounded-xl shadow-lg">
-      <h2 className="text-2xl font-bold mb-6 text-blue-700">Generate Flashcards</h2>
+    <div className="p-6 bg-white/90 border rounded-2xl shadow-xl max-w-2xl mx-auto">
+      <h2 className="text-2xl font-extrabold mb-6 text-blue-700 tracking-tight">Generate Flashcards</h2>
       <div className="mb-6">
-        <label className="block font-medium mb-1">PDF Filename</label>
+        <label className="block font-semibold mb-1 text-blue-900">PDF Filename</label>
         <input
           type="text"
           placeholder="Enter filename (e.g. file.pdf)"
           value={filename}
           onChange={(e) => setFilename(e.target.value)}
-          className="w-full p-3 border rounded bg-blue-50 focus:bg-white focus:outline-blue-300 transition"
+          className="w-full p-3 border-2 border-blue-200 rounded-lg bg-blue-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
         />
         <p className="text-xs text-gray-500 mt-1">Use the filename of a PDF you've uploaded. Flashcards will be generated from its content.</p>
       </div>
       <button
         onClick={handleFetchFlashcards}
-        className="bg-blue-600 hover:bg-blue-700 transition text-white px-6 py-2 rounded-lg font-semibold shadow mb-4 flex items-center gap-2"
+        className="bg-blue-600 hover:bg-blue-700 transition-all duration-200 text-white px-6 py-2 rounded-lg font-semibold shadow flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed mb-4"
         disabled={loading || !filename}
       >
         {loading && (
@@ -59,7 +59,7 @@ const Flashcards = () => {
       {error && <p className="text-red-600 mt-2 font-semibold">{error}</p>}
       {flashcards.length > 0 && (
         <div className="mt-8">
-          <h3 className="font-semibold mb-4 text-blue-700 text-lg">Flashcards:</h3>
+          <h3 className="font-bold mb-4 text-blue-700 text-lg">Flashcards:</h3>
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
             {flashcards.map((card, index) => (
               <div key={index} className="border-2 border-blue-200 p-4 rounded-xl bg-blue-50 shadow-inner">
