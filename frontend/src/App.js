@@ -1,85 +1,51 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import Summarizer from './components/Summarizer';
+import Flashcards from './components/Flashcards';
 
-function App() {
-  const [input, setInput] = useState('');
-  const [prompt, setPrompt] = useState('');
-  const [summary, setSummary] = useState('');
-  const [error, setError] = useState('');
-
-  const summarizeText = async (text) => {
-    const response = await axios.post('http://localhost:8080/ai/summarize', {
-      inputText: text
-    });
-    return response.data;
-  };
-
-  const summarizeWithPrompt = async (text, customPrompt) => {
-    const response = await axios.post('http://localhost:8080/ai/custom-summarize', {
-      inputText: text,
-      prompt: customPrompt
-    });
-    return response.data;
-  };
-
-  const handleDefaultSummarize = async () => {
-    setError('');
-    setSummary('');
-    try {
-      const result = await summarizeText(input);
-      setSummary(result);
-    } catch (err) {
-      setError('Default summarization failed.');
-    }
-  };
-
-  const handleCustomSummarize = async () => {
-    setError('');
-    setSummary('');
-    try {
-      const result = await summarizeWithPrompt(input, prompt);
-      setSummary(result);
-    } catch (err) {
-      setError('Custom summarization failed.');
-    }
-  };
+const App = () => {
+  const [activeTab, setActiveTab] = useState('summarizer');
 
   return (
-    <div className="App" style={{ padding: '2rem', maxWidth: '700px', margin: 'auto' }}>
-      <h1>AskEd - Summarizer</h1>
-
-      <textarea
-        rows="6"
-        cols="70"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Paste your text here..."
-      />
-      <br /><br />
-
-      <button onClick={handleDefaultSummarize}>Summarize</button>
-
-      <hr />
-
-      <input
-        type="text"
-        value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
-        placeholder="Custom prompt (e.g., Summarize in 5 points)"
-        style={{ width: '100%' }}
-      />
-      <br /><br />
-      <button onClick={handleCustomSummarize}>Custom Summarize</button>
-
-      {summary && (
-        <div style={{ marginTop: '2rem' }}>
-          <h3>Summary:</h3>
-          <p>{summary}</p>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white font-sans flex flex-col">
+      <header className="bg-blue-600 text-white py-6 shadow">
+        <div className="max-w-3xl mx-auto px-4">
+          <h1 className="text-3xl font-bold tracking-tight">AskEd AI Assistant</h1>
+          <p className="text-blue-100 mt-1">Summarize, generate flashcards, and quizzes from your documents</p>
         </div>
-      )}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      </header>
+      <nav className="max-w-3xl mx-auto w-full px-4 mt-6">
+        <div className="flex gap-4 justify-center">
+          <button
+            className={`px-5 py-2 rounded-full font-semibold transition-colors duration-200 shadow-sm border-2 ${
+              activeTab === 'summarizer'
+                ? 'bg-blue-500 text-white border-blue-600 scale-105'
+                : 'bg-white text-blue-700 border-blue-200 hover:bg-blue-50'
+            }`}
+            onClick={() => setActiveTab('summarizer')}
+          >
+            Summarizer
+          </button>
+          <button
+            className={`px-5 py-2 rounded-full font-semibold transition-colors duration-200 shadow-sm border-2 ${
+              activeTab === 'flashcards'
+                ? 'bg-blue-500 text-white border-blue-600 scale-105'
+                : 'bg-white text-blue-700 border-blue-200 hover:bg-blue-50'
+            }`}
+            onClick={() => setActiveTab('flashcards')}
+          >
+            Flashcards
+          </button>
+        </div>
+      </nav>
+      <main className="flex-1 max-w-3xl mx-auto w-full px-4 mt-8">
+        {activeTab === 'summarizer' && <Summarizer />}
+        {activeTab === 'flashcards' && <Flashcards />}
+      </main>
+      <footer className="bg-blue-50 text-blue-700 py-4 mt-12 text-center text-sm border-t">
+        &copy; {new Date().getFullYear()} AskEd AI. All rights reserved.
+      </footer>
     </div>
   );
-}
+};
 
 export default App;
