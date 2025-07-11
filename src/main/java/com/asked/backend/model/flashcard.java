@@ -15,6 +15,8 @@ public class flashcard {
     @JoinColumn(name = "user_id")
     private User user;
 
+    private String folder;
+
     public flashcard() {}
 
     public flashcard(String question, String answer) {
@@ -26,6 +28,13 @@ public class flashcard {
         this.question = question;
         this.answer = answer;
         this.user = user;
+    }
+
+    public flashcard(String question, String answer, User user, String folder) {
+        this.question = question;
+        this.answer = answer;
+        this.user = user;
+        this.folder = folder;
     }
 
     public Long getId() {
@@ -54,5 +63,13 @@ public class flashcard {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getFolder() {
+        return folder;
+    }
+
+    public void setFolder(String folder) {
+        this.folder = folder;
     }
 }

@@ -80,6 +80,17 @@ public class aiController {
         }
     }
 
+    @PostMapping("/flashcards-from-text")
+    public ResponseEntity<String> aiFlashcardsFromText(@RequestBody SummarizeRequest request) {
+        try {
+            String aiResponse = openRouterservice.getFlashcardsFromText(request.getInputText());
+            return ResponseEntity.ok(aiResponse);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("AI flashcard generation failed");
+        }
+    }
+
     @PostMapping("/quiz")
     public ResponseEntity<?> generateQuiz(@RequestBody QuizRequest request) {
         try {

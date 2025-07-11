@@ -1,16 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PdfUploader from './PdfUploader';
 import PdfTextExtractor from './PdfTextExtractor';
 
-const Summarizer = () => {
-  const [inputText, setInputText] = useState('');
+const Summarizer = ({ initialText = '' }) => {
+  const [inputText, setInputText] = useState(initialText);
   const [summary, setSummary] = useState('');
   const [customPrompt, setCustomPrompt] = useState('');
   const [loading, setLoading] = useState(false);
   const [uploadedFilename, setUploadedFilename] = useState('');
   const [extractedText, setExtractedText] = useState('');
-  const [mode, setMode] = useState('select'); // 'select', 'text', 'pdf'
+  const [mode, setMode] = useState(initialText ? 'text' : 'select'); // 'select', 'text', 'pdf'
+
+  // Update input text when initialText changes
+  useEffect(() => {
+    if (initialText) {
+      setInputText(initialText);
+      setMode('text');
+    }
+  }, [initialText]);
 
   const handleSummarize = async () => {
     setLoading(true);
