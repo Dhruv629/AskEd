@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const Login = ({ onLogin, onSwitchToRegister }) => {
+const Login = ({ onLogin, onSwitchToRegister, darkMode = false }) => {
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -39,8 +39,14 @@ const Login = ({ onLogin, onSwitchToRegister }) => {
   };
 
   return (
-    <div className="p-6 bg-white/90 border rounded-2xl shadow-xl max-w-md mx-auto">
-      <h2 className="text-2xl font-extrabold mb-6 text-blue-700 tracking-tight text-center">Login</h2>
+    <div className={`p-6 border rounded-2xl shadow-xl max-w-md mx-auto ${
+      darkMode 
+        ? 'bg-gray-800/90 text-white border-gray-600' 
+        : 'bg-white/90 text-gray-900 border-gray-200'
+    }`}>
+      <h2 className={`text-2xl font-extrabold mb-6 tracking-tight text-center ${
+        darkMode ? 'text-blue-300' : 'text-blue-700'
+      }`}>Login</h2>
       
       {error && (
         <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
@@ -50,27 +56,35 @@ const Login = ({ onLogin, onSwitchToRegister }) => {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block font-semibold mb-1 text-blue-900">Username</label>
+          <label className={`block font-semibold mb-1 ${darkMode ? 'text-blue-300' : 'text-blue-900'}`}>Username</label>
           <input
             type="text"
             name="username"
             value={formData.username}
             onChange={handleChange}
             required
-            className="w-full p-3 border-2 border-blue-200 rounded-lg bg-blue-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
+            className={`w-full p-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 transition ${
+              darkMode 
+                ? 'border-gray-600 bg-gray-700 text-white focus:bg-gray-600' 
+                : 'border-blue-200 bg-blue-50 focus:bg-white'
+            }`}
             placeholder="Enter your username"
           />
         </div>
 
         <div>
-          <label className="block font-semibold mb-1 text-blue-900">Password</label>
+          <label className={`block font-semibold mb-1 ${darkMode ? 'text-blue-300' : 'text-blue-900'}`}>Password</label>
           <input
             type="password"
             name="password"
             value={formData.password}
             onChange={handleChange}
             required
-            className="w-full p-3 border-2 border-blue-200 rounded-lg bg-blue-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
+            className={`w-full p-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 transition ${
+              darkMode 
+                ? 'border-gray-600 bg-gray-700 text-white focus:bg-gray-600' 
+                : 'border-blue-200 bg-blue-50 focus:bg-white'
+            }`}
             placeholder="Enter your password"
           />
         </div>
@@ -91,7 +105,7 @@ const Login = ({ onLogin, onSwitchToRegister }) => {
       </form>
 
       <div className="mt-6 text-center">
-        <p className="text-gray-600">
+        <p className={darkMode ? 'text-gray-300' : 'text-gray-600'}>
           Don't have an account?{' '}
           <button
             onClick={onSwitchToRegister}
