@@ -152,21 +152,28 @@ public class flashcardController {
     @PostMapping("/db/flashcards")
     public ResponseEntity<?> saveFlashcardsToDb(@RequestBody List<flashcard> flashcards) {
         try {
+            System.out.println("Received flashcards: " + flashcards.size());
+            
             // Get current authenticated user
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName();
+            System.out.println("Authenticated user: " + username);
             
             User user = userRepository.findByUsername(username)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+                    .orElseThrow(() -> new RuntimeException("User not found: " + username));
 
             // Associate flashcards with the user
             for (flashcard card : flashcards) {
+                System.out.println("Processing card - Question: " + card.getQuestion() + ", Answer: " + card.getAnswer() + ", Folder: " + card.getFolder());
                 card.setUser(user);
             }
 
             List<flashcard> saved = flashcardRepository.saveAll(flashcards);
+            System.out.println("Successfully saved " + saved.size() + " flashcards");
             return ResponseEntity.ok(saved);
         } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error saving flashcards: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Failed to save flashcards: " + e.getMessage());
         }

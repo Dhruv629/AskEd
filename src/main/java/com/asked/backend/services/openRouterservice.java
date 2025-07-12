@@ -21,7 +21,7 @@ public class openRouterservice {
         OkHttpClient client = new OkHttpClient();
         ObjectMapper mapper = new ObjectMapper();
 
-        String prompt = "Generate 5 educational flashcards from this content. " +
+        String prompt = "Generate at least 12 educational flashcards from this content. " +
                 "Each flashcard should be in JSON format with 'question' and 'answer' fields only.\n\n" + inputText;
 
         Map<String, Object> message = new HashMap<>();
