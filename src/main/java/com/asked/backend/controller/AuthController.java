@@ -3,6 +3,7 @@ package com.asked.backend.controller;
 import com.asked.backend.dto.AuthResponse;
 import com.asked.backend.dto.LoginRequest;
 import com.asked.backend.dto.RegisterRequest;
+import com.asked.backend.dto.ValidationUtils;
 import com.asked.backend.model.User;
 import com.asked.backend.model.UserRepository;
 import com.asked.backend.utils.JwtUtil;
@@ -11,6 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -28,20 +32,53 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         try {
+            // Input validation
+            Map<String, String> validationErrors = new HashMap<>();
+            
+            if (!ValidationUtils.isValidUsername(request.getUsername())) {
+                validationErrors.put("username", "Username must be 3-20 characters long and contain only letters, numbers, and underscores");
+            }
+            
+            if (!ValidationUtils.isValidEmail(request.getEmail())) {
+                validationErrors.put("email", "Please provide a valid email address");
+            }
+            
+            if (!ValidationUtils.isValidPassword(request.getPassword())) {
+                validationErrors.put("password", "Password must be at least 6 characters long");
+            }
+            
+            if (!validationErrors.isEmpty()) {
+                Map<String, Object> response = new HashMap<>();
+                response.put("error", "Validation failed");
+                response.put("details", validationErrors);
+                response.put("timestamp", System.currentTimeMillis());
+                return ResponseEntity.badRequest().body(response);
+            }
+            
+            // Sanitize inputs
+            String sanitizedUsername = ValidationUtils.sanitizeText(request.getUsername());
+            String sanitizedEmail = ValidationUtils.sanitizeText(request.getEmail());
+            
             // Check if username already exists
-            if (userRepository.existsByUsername(request.getUsername())) {
-                return ResponseEntity.badRequest().body("Username already exists");
+            if (userRepository.existsByUsername(sanitizedUsername)) {
+                Map<String, Object> response = new HashMap<>();
+                response.put("error", "Username already exists");
+                response.put("timestamp", System.currentTimeMillis());
+                return ResponseEntity.badRequest().body(response);
             }
 
             // Check if email already exists
-            if (userRepository.existsByEmail(request.getEmail())) {
-                return ResponseEntity.badRequest().body("Email already exists");
+            if (userRepository.existsByEmail(sanitizedEmail)) {
+                Map<String, Object> response = new HashMap<>();
+                response.put("error", "Email already exists");
+                response.put("timestamp", System.currentTimeMillis());
+                return ResponseEntity.badRequest().body(response);
             }
 
             // Create new user with encrypted password
             User user = new User(
-                request.getUsername(),
-                request.getEmail(),
+                sanitizedUsername,
+                sanitizedEmail,
                 passwordEncoder.encode(request.getPassword())
             );
 
@@ -52,8 +89,11 @@ public class AuthController {
 
             return ResponseEntity.ok(new AuthResponse(token, user.getUsername()));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Registration failed: " + e.getMessage());
+            Map<String, Object> response = new HashMap<>();
+            response.put("error", "Registration failed");
+            response.put("message", "An unexpected error occurred during registration");
+            response.put("timestamp", System.currentTimeMillis());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
@@ -84,7 +124,7 @@ public class AuthController {
     }
 
     @GetMapping("/validate")
-    public ResponseEntity<?> validateToken(@RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<?> validateToken(@RequestHeader(value = "Authorization", required = false) String authHeader) {
         try {
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                 return ResponseEntity.badRequest().body("Invalid token format");

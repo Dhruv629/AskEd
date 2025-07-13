@@ -18,8 +18,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.asked.backend.dto.ValidationUtils;
 
 import static com.asked.backend.utils.fileStoragePaths.UPLOAD_DIR;
 
@@ -31,26 +33,67 @@ public class uploadController {
 
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadPDF(@RequestParam("file") MultipartFile file) {
-        if (file.isEmpty()) {
-            System.out.println("Received an empty file.");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("File is empty");
-        }
-
+    public ResponseEntity<?> uploadPDF(@RequestParam("file") MultipartFile file) {
         try {
+            // Validate file
+            if (file.isEmpty()) {
+                Map<String, Object> response = new HashMap<>();
+                response.put("error", "File is empty");
+                response.put("timestamp", System.currentTimeMillis());
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            // Validate file type
+            String originalFilename = file.getOriginalFilename();
+            if (originalFilename == null || !ValidationUtils.isValidPdfFile(originalFilename)) {
+                Map<String, Object> response = new HashMap<>();
+                response.put("error", "Invalid file type");
+                response.put("message", "Only PDF files are allowed");
+                response.put("timestamp", System.currentTimeMillis());
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            // Validate file size (10MB limit)
+            if (!ValidationUtils.isValidFileSize(file.getSize(), 10 * 1024 * 1024)) {
+                Map<String, Object> response = new HashMap<>();
+                response.put("error", "File too large");
+                response.put("message", "File size must be less than 10MB");
+                response.put("timestamp", System.currentTimeMillis());
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            // Sanitize filename
+            String sanitizedFilename = ValidationUtils.sanitizeText(originalFilename);
+            if (sanitizedFilename == null) {
+                Map<String, Object> response = new HashMap<>();
+                response.put("error", "Invalid filename");
+                response.put("timestamp", System.currentTimeMillis());
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            // Create upload directory
             File uploadDir = new File(UPLOAD_DIR);
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
             }
 
-            String filePath = UPLOAD_DIR + file.getOriginalFilename();
+            // Save file with sanitized name
+            String filePath = UPLOAD_DIR + sanitizedFilename;
             file.transferTo(new File(filePath));
 
-            System.out.println("Uploaded file: " + file.getOriginalFilename());
-            return ResponseEntity.ok("File uploaded successfully: " + file.getOriginalFilename());
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "File uploaded successfully");
+            response.put("filename", sanitizedFilename);
+            response.put("size", file.getSize());
+            response.put("timestamp", System.currentTimeMillis());
+
+            return ResponseEntity.ok(response);
         } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file");
+            Map<String, Object> response = new HashMap<>();
+            response.put("error", "Upload failed");
+            response.put("message", "Failed to save file");
+            response.put("timestamp", System.currentTimeMillis());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
