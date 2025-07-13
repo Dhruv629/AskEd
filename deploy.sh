@@ -37,7 +37,7 @@ JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
 JWT_EXPIRATION=86400000
 
 # AI Service Configuration
-OPENROUTER_API_KEY=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
+OPENROUTER_API_KEY=your-openrouter-api-key-here
 
 # CORS Configuration
 CORS_ALLOWED_ORIGINS=http://localhost:80,http://localhost:3000
