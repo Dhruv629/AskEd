@@ -119,8 +119,9 @@ const Home = ({ onNavigateToSummarizer, onNavigateToFlashcards }) => {
       {/* Text Input */}
       {inputMethod === 'text' && (
         <div className="mb-6">
-          <label className="block font-semibold mb-2 text-blue-900">Text Content</label>
+          <label htmlFor="textContent" className="block font-semibold mb-2 text-blue-900">Text Content</label>
           <textarea
+            id="textContent"
             value={textContent}
             onChange={handleTextChange}
             placeholder="Paste or type your text here..."
@@ -134,8 +135,9 @@ const Home = ({ onNavigateToSummarizer, onNavigateToFlashcards }) => {
       {/* PDF Upload */}
       {inputMethod === 'pdf' && (
         <div className="mb-6">
-          <label className="block font-semibold mb-2 text-blue-900">Upload PDF</label>
+          <label htmlFor="pdfFile" className="block font-semibold mb-2 text-blue-900">Upload PDF</label>
           <input
+            id="pdfFile"
             type="file"
             onChange={handleFileChange}
             accept="application/pdf"
@@ -163,8 +165,8 @@ const Home = ({ onNavigateToSummarizer, onNavigateToFlashcards }) => {
 
           {extractedText && (
             <div className="mt-4">
-              <label className="block font-semibold mb-2 text-blue-900">Extracted Text</label>
-              <div className="p-3 border-2 border-blue-200 rounded-lg bg-blue-50 max-h-32 overflow-y-auto text-sm">
+              <label htmlFor="extractedText" className="block font-semibold mb-2 text-blue-900">Extracted Text</label>
+              <div id="extractedText" className="p-3 border-2 border-blue-200 rounded-lg bg-blue-50 max-h-32 overflow-y-auto text-sm">
                 {extractedText.substring(0, 200)}...
               </div>
               <p className="text-xs text-gray-500 mt-1">Text extracted from PDF (showing first 200 characters)</p>

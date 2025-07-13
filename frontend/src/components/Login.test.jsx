@@ -2,10 +2,10 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Login from './Login';
+import axios from 'axios';
 
 // Mock axios
 jest.mock('axios');
-const axios = require('axios');
 
 describe('Login Component', () => {
   const mockOnLogin = jest.fn();
@@ -18,7 +18,7 @@ describe('Login Component', () => {
   test('renders login form', () => {
     render(<Login onLogin={mockOnLogin} onSwitchToRegister={mockOnSwitchToRegister} />);
     
-    expect(screen.getByText('Login')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Login' })).toBeInTheDocument();
     expect(screen.getByLabelText('Username')).toBeInTheDocument();
     expect(screen.getByLabelText('Password')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument();
@@ -107,15 +107,17 @@ describe('Login Component', () => {
     
     fireEvent.click(screen.getByRole('button', { name: 'Login' }));
 
-    await waitFor(() => {
-      expect(screen.getByDisplayValue('')).toBeInTheDocument();
-    });
+    // Check that both inputs are empty
+    const usernameInput = screen.getByLabelText('Username');
+    const passwordInput = screen.getByLabelText('Password');
+    expect(usernameInput.value).toBe('');
+    expect(passwordInput.value).toBe('');
   });
 
   test('renders with dark mode', () => {
     render(<Login onLogin={mockOnLogin} onSwitchToRegister={mockOnSwitchToRegister} darkMode={true} />);
     
-    const container = screen.getByText('Login').closest('div');
+    const container = screen.getByRole('heading', { name: 'Login' }).closest('div');
     expect(container).toHaveClass('bg-gray-800/90');
   });
 }); 

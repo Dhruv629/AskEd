@@ -19,6 +19,7 @@ const flipCardStyles = `
 
 const Flashcards = ({ initialContent = '', initialFilename = null }) => {
   const [filename, setFilename] = useState(initialFilename || '');
+  const [textContent, setTextContent] = useState(initialContent);
   const [generatedFlashcards, setGeneratedFlashcards] = useState({}); // { sessionId: { cards: [], timestamp: Date, sessionId: string } }
   const [savedFlashcards, setSavedFlashcards] = useState([]);
   const [folders, setFolders] = useState([]);
@@ -616,8 +617,9 @@ const Flashcards = ({ initialContent = '', initialFilename = null }) => {
         <h2 className="text-2xl font-extrabold mb-6 text-blue-700 tracking-tight">Generate Flashcards</h2>
         
         <div className="mb-6">
-          <label className="block font-semibold mb-1 text-blue-900">PDF Filename (Optional)</label>
+          <label htmlFor="pdfFilename" className="block font-semibold mb-1 text-blue-900">PDF Filename (Optional)</label>
           <input
+            id="pdfFilename"
             type="text"
             placeholder="Enter filename (e.g. file.pdf) or leave empty for text input"
             value={filename}
@@ -630,12 +632,14 @@ const Flashcards = ({ initialContent = '', initialFilename = null }) => {
         </div>
 
         <div className="mb-6">
-          <label className="block font-semibold mb-1 text-blue-900">Text Content</label>
+          <label htmlFor="textInput" className="block font-semibold mb-1 text-blue-900">Text Content</label>
           <textarea
+            id="textInput"
+            value={textContent}
+            onChange={(e) => setTextContent(e.target.value)}
             placeholder="Paste your text here to generate flashcards..."
             className="w-full p-3 border-2 border-blue-200 rounded-lg bg-blue-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
             rows={4}
-            id="textInput"
           />
           <p className="text-xs text-gray-500 mt-1">Paste text content to generate flashcards</p>
         </div>
@@ -643,11 +647,10 @@ const Flashcards = ({ initialContent = '', initialFilename = null }) => {
         <div className="flex gap-4">
           <button
             onClick={() => {
-              const text = document.getElementById('textInput').value;
               if (filename) {
                 handleGenerateFromPDF(filename);
-              } else if (text.trim()) {
-                handleGenerateFromText(text);
+              } else if (textContent.trim()) {
+                handleGenerateFromText(textContent);
               } else {
                 setError('Please provide either a PDF filename or text content');
               }

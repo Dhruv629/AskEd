@@ -56,8 +56,9 @@ const Login = ({ onLogin, onSwitchToRegister, darkMode = false }) => {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className={`block font-semibold mb-1 ${darkMode ? 'text-blue-300' : 'text-blue-900'}`}>Username</label>
+          <label htmlFor="username" className={`block font-semibold mb-1 ${darkMode ? 'text-blue-300' : 'text-blue-900'}`}>Username</label>
           <input
+            id="username"
             type="text"
             name="username"
             value={formData.username}
@@ -73,8 +74,9 @@ const Login = ({ onLogin, onSwitchToRegister, darkMode = false }) => {
         </div>
 
         <div>
-          <label className={`block font-semibold mb-1 ${darkMode ? 'text-blue-300' : 'text-blue-900'}`}>Password</label>
+          <label htmlFor="password" className={`block font-semibold mb-1 ${darkMode ? 'text-blue-300' : 'text-blue-900'}`}>Password</label>
           <input
+            id="password"
             type="password"
             name="password"
             value={formData.password}

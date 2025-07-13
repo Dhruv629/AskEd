@@ -77,8 +77,9 @@ const Register = ({ onRegister, onSwitchToLogin, darkMode = false }) => {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className={`block font-semibold mb-1 ${darkMode ? 'text-blue-300' : 'text-blue-900'}`}>Username</label>
+          <label htmlFor="username" className={`block font-semibold mb-1 ${darkMode ? 'text-blue-300' : 'text-blue-900'}`}>Username</label>
           <input
+            id="username"
             type="text"
             name="username"
             value={formData.username}
@@ -94,8 +95,9 @@ const Register = ({ onRegister, onSwitchToLogin, darkMode = false }) => {
         </div>
 
         <div>
-          <label className={`block font-semibold mb-1 ${darkMode ? 'text-blue-300' : 'text-blue-900'}`}>Email</label>
+          <label htmlFor="email" className={`block font-semibold mb-1 ${darkMode ? 'text-blue-300' : 'text-blue-900'}`}>Email</label>
           <input
+            id="email"
             type="email"
             name="email"
             value={formData.email}
@@ -111,8 +113,9 @@ const Register = ({ onRegister, onSwitchToLogin, darkMode = false }) => {
         </div>
 
         <div>
-          <label className={`block font-semibold mb-1 ${darkMode ? 'text-blue-300' : 'text-blue-900'}`}>Password</label>
+          <label htmlFor="password" className={`block font-semibold mb-1 ${darkMode ? 'text-blue-300' : 'text-blue-900'}`}>Password</label>
           <input
+            id="password"
             type="password"
             name="password"
             value={formData.password}
@@ -129,8 +132,9 @@ const Register = ({ onRegister, onSwitchToLogin, darkMode = false }) => {
         </div>
 
         <div>
-          <label className={`block font-semibold mb-1 ${darkMode ? 'text-blue-300' : 'text-blue-900'}`}>Confirm Password</label>
+          <label htmlFor="confirmPassword" className={`block font-semibold mb-1 ${darkMode ? 'text-blue-300' : 'text-blue-900'}`}>Confirm Password</label>
           <input
+            id="confirmPassword"
             type="password"
             name="confirmPassword"
             value={formData.confirmPassword}
