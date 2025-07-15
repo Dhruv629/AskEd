@@ -1,3 +1,5 @@
+# This Dockerfile uses openjdk:17-jdk-slim (not jre) as the runtime base image.
+# It uses a multi-stage build: Maven for building, OpenJDK for running the Spring Boot app.
 # Multi-stage build for Spring Boot application
 FROM maven:3.8.4-openjdk-17 AS build
 
@@ -15,7 +17,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Runtime stage
-FROM openjdk:17-jre-slim
+FROM openjdk:17-jdk-slim
 
 # Create app user for security
 RUN groupadd -r appuser && useradd -r -g appuser appuser

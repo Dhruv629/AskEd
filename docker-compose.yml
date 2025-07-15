@@ -25,7 +25,9 @@ services:
 
   # Spring Boot Backend
   backend:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: asked-backend
     restart: unless-stopped
     ports:
@@ -35,7 +37,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/asked_db?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=asked_user
       - SPRING_DATASOURCE_PASSWORD=your_password
-      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY} # Set this in Railway's environment variables
     volumes:
       - uploads_data:/app/uploads
       - flashcards_data:/app/flashcards
