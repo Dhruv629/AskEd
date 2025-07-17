@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { getApiUrl } from '../utils/api';
 
 const Login = ({ onLogin, onSwitchToRegister, darkMode = false }) => {
   const [formData, setFormData] = useState({
@@ -22,7 +23,7 @@ const Login = ({ onLogin, onSwitchToRegister, darkMode = false }) => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:8080/auth/login', formData);
+      const response = await axios.post(getApiUrl('/auth/login'), formData);
       const { token, username } = response.data;
       
       // Store token in localStorage

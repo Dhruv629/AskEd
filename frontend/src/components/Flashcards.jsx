@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { getApiUrl } from '../utils/api';
 
 // Add custom CSS for 3D flip effect
 const flipCardStyles = `
@@ -84,7 +85,7 @@ const Flashcards = ({ initialContent = '', initialFilename = null }) => {
 
   const loadSavedFlashcards = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/db/flashcards', {
+      const response = await axios.get(getApiUrl('/db/flashcards'), {
         headers: getAuthHeaders()
       });
       setSavedFlashcards(response.data);
@@ -106,7 +107,7 @@ const Flashcards = ({ initialContent = '', initialFilename = null }) => {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.post('http://localhost:8080/ai/flashcards-from-text', {
+      const res = await axios.post(getApiUrl('/ai/flashcards-from-text'), {
         inputText: text
       });
       
@@ -181,7 +182,7 @@ const Flashcards = ({ initialContent = '', initialFilename = null }) => {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.get(`http://localhost:8080/ai/flashcards`, {
+      const res = await axios.get(getApiUrl(`/ai/flashcards`), {
         params: { filename },
       });
       
@@ -284,7 +285,7 @@ const Flashcards = ({ initialContent = '', initialFilename = null }) => {
       console.log('Saving flashcards:', flashcardsWithFolder);
       console.log('Auth headers:', getAuthHeaders());
 
-      const response = await axios.post('http://localhost:8080/db/flashcards', flashcardsWithFolder, {
+      const response = await axios.post(getApiUrl('/db/flashcards'), flashcardsWithFolder, {
         headers: getAuthHeaders()
       });
       
@@ -332,7 +333,7 @@ const Flashcards = ({ initialContent = '', initialFilename = null }) => {
 
   const handleDeleteFlashcard = async (id) => {
     try {
-      await axios.delete(`http://localhost:8080/db/flashcards/${id}`, {
+      await axios.delete(getApiUrl(`/db/flashcards/${id}`), {
         headers: getAuthHeaders()
       });
       
@@ -357,7 +358,7 @@ const Flashcards = ({ initialContent = '', initialFilename = null }) => {
     try {
       // Delete all flashcards in the folder
       const deletePromises = cardsInFolder.map(card => 
-        axios.delete(`http://localhost:8080/db/flashcards/${card.id}`, {
+        axios.delete(getApiUrl(`/db/flashcards/${card.id}`), {
           headers: getAuthHeaders()
         })
       );

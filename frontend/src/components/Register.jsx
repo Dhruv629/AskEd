@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { getApiUrl } from '../utils/api';
 
 const Register = ({ onRegister, onSwitchToLogin, darkMode = false }) => {
   const [formData, setFormData] = useState({
@@ -38,7 +39,7 @@ const Register = ({ onRegister, onSwitchToLogin, darkMode = false }) => {
     }
 
     try {
-      const response = await axios.post('http://localhost:8080/auth/register', {
+      const response = await axios.post(getApiUrl('/auth/register'), {
         username: formData.username,
         email: formData.email,
         password: formData.password

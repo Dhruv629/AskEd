@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PdfUploader from './PdfUploader';
 import PdfTextExtractor from './PdfTextExtractor';
+import { getApiUrl } from '../utils/api';
 
 const Summarizer = ({ initialText = '' }) => {
   const [inputText, setInputText] = useState(initialText);
@@ -32,7 +33,7 @@ const Summarizer = ({ initialText = '' }) => {
       const inputTextForApi = customPrompt
         ? `${customPrompt}\n\n${textToSummarize}`
         : textToSummarize;
-      const res = await axios.post('http://localhost:8080/ai/summarize', {
+      const res = await axios.post(getApiUrl('/ai/summarize'), {
         inputText: inputTextForApi,
       });
       setSummary(res.data);

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { getApiUrl } from '../utils/api';
 
 const PdfUploader = ({ onUploadSuccess }) => {
   const [file, setFile] = useState(null);
@@ -17,7 +18,7 @@ const PdfUploader = ({ onUploadSuccess }) => {
 
     setUploading(true);
     try {
-      await axios.post('http://localhost:8080/upload', formData);
+      await axios.post(getApiUrl('/upload'), formData);
       onUploadSuccess(file.name); // inform parent component
     } catch (error) {
       console.error('Upload failed:', error);

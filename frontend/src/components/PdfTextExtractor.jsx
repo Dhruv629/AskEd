@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { getApiUrl } from '../utils/api';
 
 const PdfTextExtractor = ({ filename, onExtracted }) => {
   const [extractedText, setExtractedText] = useState('');
@@ -13,7 +14,7 @@ const PdfTextExtractor = ({ filename, onExtracted }) => {
 
     setLoading(true);
     try {
-      const res = await axios.get(`http://localhost:8080/extract?filename=${filename}`);
+      const res = await axios.get(getApiUrl(`/extract?filename=${filename}`));
       setExtractedText(res.data);
       if (onExtracted) onExtracted(res.data);
     } catch (err) {

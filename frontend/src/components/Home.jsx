@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { getApiUrl } from '../utils/api';
 
 const Home = ({ onNavigateToSummarizer, onNavigateToFlashcards }) => {
   const [inputMethod, setInputMethod] = useState('text'); // 'text' or 'pdf'
@@ -30,7 +31,7 @@ const Home = ({ onNavigateToSummarizer, onNavigateToFlashcards }) => {
     setUploading(true);
     setError('');
     try {
-      await axios.post('http://localhost:8080/upload', formData);
+      await axios.post(getApiUrl('/upload'), formData);
       setUploadedFilename(pdfFile.name);
       
       // Automatically extract text after upload
@@ -45,7 +46,7 @@ const Home = ({ onNavigateToSummarizer, onNavigateToFlashcards }) => {
 
   const extractTextFromPDF = async (filename) => {
     try {
-      const res = await axios.get(`http://localhost:8080/extract?filename=${filename}`);
+      const res = await axios.get(getApiUrl(`/extract?filename=${filename}`));
       setExtractedText(res.data);
     } catch (err) {
       console.error("Failed to extract:", err);
