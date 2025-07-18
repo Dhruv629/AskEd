@@ -1,0 +1,71 @@
+# ===================== BACKEND (Spring Boot) =====================
+# Maven
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+
+# Compiled class files
+*.class
+*.jar
+
+# Logs
+*.log
+
+# ===================== FRONTEND (React) =====================
+# Dependencies
+frontend/node_modules/
+frontend/.pnp
+frontend/.pnp.js
+
+# Production builds
+frontend/build/
+frontend/dist/
+
+# Environment variables
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# Cache
+frontend/node_modules/.cache/
+frontend/.cache/
+frontend/.eslintcache
+
+# Testing
+frontend/coverage/
+
+# ===================== UPLOADS & DATA =====================
+uploads/
+flashcards/
+quizzes/
+
+# ===================== CONFIGURATION =====================
+# Spring Boot sensitive config (uncomment if you want to ignore)
+# backend/src/main/resources/application.properties
+# backend/src/main/resources/application.yml
+
+# ===================== OS GENERATED =====================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ===================== TEMPORARY FILES =====================
+*.tmp
+*.temp
+*.swp
+*.swo
+*~ 
