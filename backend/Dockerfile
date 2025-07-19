@@ -1,26 +1,28 @@
-# Stage 1: Build the JAR
-FROM maven:3.9.6-eclipse-temurin-17 as builder
+# Use OpenJDK 17 as base image
+FROM openjdk:17-jdk-slim
 
+# Set working directory
 WORKDIR /app
 
-# Copy pom.xml and install dependencies first (for caching)
+# Copy the Maven wrapper and pom.xml
+COPY mvnw .
+COPY .mvn .mvn
 COPY pom.xml .
-RUN mvn dependency:go-offline
 
-# Copy rest of the source code
+# Make mvnw executable
+RUN chmod +x mvnw
+
+# Download dependencies
+RUN ./mvnw dependency:go-offline -B
+
+# Copy source code
 COPY src ./src
 
 # Build the application
-RUN mvn clean package -DskipTests
+RUN ./mvnw clean package -DskipTests
 
-# Stage 2: Run the app
-FROM eclipse-temurin:17-jdk-alpine
-
-WORKDIR /app
-
-# Copy the built JAR from Stage 1
-COPY --from=builder /app/target/*.jar app.jar
-
+# Expose port
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Run the application
+CMD ["java", "-jar", "target/backend-0.0.1-SNAPSHOT.jar"]

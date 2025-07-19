@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: asked-backend
+    env: java
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/backend-0.0.1-SNAPSHOT.jar
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: PORT
+        value: 8080
+      - key: JWT_SECRET
+        generateValue: true
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: asked-database
+          property: connectionString
+      - key: DB_USERNAME
+        fromDatabase:
+          name: asked-database
+          property: username
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: asked-database
+          property: password
+      - key: FRONTEND_URL
+        value: https://asked-frontend.vercel.app
+
+databases:
+  - name: asked-database
+    databaseName: asked_db
+    user: asked_user 

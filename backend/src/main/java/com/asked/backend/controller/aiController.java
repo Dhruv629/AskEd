@@ -1,7 +1,6 @@
 package com.asked.backend.controller;
 
 import com.asked.backend.dto.CustomSummarizeRequest;
-import com.asked.backend.dto.QuizRequest;
 import com.asked.backend.dto.SummarizeRequest;
 import com.asked.backend.model.flashcard;
 import com.asked.backend.services.OpenRouterService;
@@ -91,15 +90,6 @@ public class aiController {
         }
     }
 
-    @PostMapping("/quiz")
-    public ResponseEntity<?> generateQuiz(@RequestBody QuizRequest request) {
-        try {
-            String quizJson = openRouterservice.generateQuizFromText(request.getInputText());
-            return ResponseEntity.ok(quizJson);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("{\"error\":\"Quiz generation failed: " + e.getMessage() + "\"}");
-        }
-    }
+  
 
 }
