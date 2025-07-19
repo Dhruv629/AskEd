@@ -180,7 +180,7 @@ const Home = ({ onNavigateToSummarizer, onNavigateToFlashcards }) => {
       <div className="flex gap-4 justify-center">
         <button
           onClick={handleGenerateSummary}
-          disabled={loading || (!textContent.trim() && !extractedText.trim())}
+          disabled={(!textContent.trim() && !extractedText.trim())}
           className="bg-green-600 hover:bg-green-700 transition-all duration-200 text-white px-6 py-3 rounded-lg font-semibold shadow focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
         >
           📝 Generate Summary
@@ -188,7 +188,7 @@ const Home = ({ onNavigateToSummarizer, onNavigateToFlashcards }) => {
         
         <button
           onClick={handleGenerateFlashcards}
-          disabled={loading || (!textContent.trim() && !extractedText.trim())}
+          disabled={(!textContent.trim() && !extractedText.trim())}
           className="bg-blue-600 hover:bg-blue-700 transition-all duration-200 text-white px-6 py-3 rounded-lg font-semibold shadow focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
         >
           🎯 Generate Flashcards
