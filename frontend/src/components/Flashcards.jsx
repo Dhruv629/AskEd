@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { getApiUrl } from '../utils/api';
 
@@ -29,7 +29,7 @@ const Flashcards = ({ initialContent = '', initialFilename = null }) => {
   const [saving, setSaving] = useState(false);
   const [showFolderPrompt, setShowFolderPrompt] = useState(false);
   const [folderName, setFolderName] = useState('');
-  const [currentFolder, setCurrentFolder] = useState(null);
+  // const [currentFolder, setCurrentFolder] = useState(null); // Removed unused variables
   const [practiceMode, setPracticeMode] = useState(false);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -70,7 +70,7 @@ const Flashcards = ({ initialContent = '', initialFilename = null }) => {
   // Load user's saved flashcards and folders on component mount
   useEffect(() => {
     loadSavedFlashcards();
-  }, []);
+  }, [loadSavedFlashcards]);
 
   // Inject custom CSS for flip card effect
   useEffect(() => {
@@ -83,7 +83,7 @@ const Flashcards = ({ initialContent = '', initialFilename = null }) => {
     };
   }, []);
 
-  const loadSavedFlashcards = async () => {
+  const loadSavedFlashcards = useCallback(async () => {
     try {
       const response = await axios.get(getApiUrl('/db/flashcards'), {
         headers: getAuthHeaders()
@@ -96,7 +96,7 @@ const Flashcards = ({ initialContent = '', initialFilename = null }) => {
     } catch (err) {
       console.error('Failed to load saved flashcards:', err);
     }
-  };
+  }, []);
 
   const handleGenerateFromText = async (text) => {
     if (!text.trim()) {
@@ -409,9 +409,9 @@ const Flashcards = ({ initialContent = '', initialFilename = null }) => {
   }, []);
 
   // Utility function to trigger logout cleanup (call this from your auth component)
-  const triggerLogoutCleanup = () => {
-    window.dispatchEvent(new Event('logout'));
-  };
+  // const triggerLogoutCleanup = () => { // Removed unused function
+  //   window.dispatchEvent(new Event('logout'));
+  // };
 
   // NOTE: To trigger logout cleanup from your auth component, call:
   // window.dispatchEvent(new Event('logout'));
@@ -440,30 +440,30 @@ const Flashcards = ({ initialContent = '', initialFilename = null }) => {
     setPracticeMode(true);
   };
 
-  const stopPracticeMode = () => {
+  const stopPracticeMode = useCallback(() => {
     setPracticeMode(false);
     setCurrentCardIndex(0);
     setIsFlipped(false);
     setPracticeCards([]);
-  };
+  }, []);
 
-  const nextCard = () => {
+  const nextCard = useCallback(() => {
     if (currentCardIndex < practiceCards.length - 1) {
       setCurrentCardIndex(currentCardIndex + 1);
       setIsFlipped(false);
     }
-  };
+  }, [currentCardIndex, practiceCards.length]);
 
-  const previousCard = () => {
+  const previousCard = useCallback(() => {
     if (currentCardIndex > 0) {
       setCurrentCardIndex(currentCardIndex - 1);
       setIsFlipped(false);
     }
-  };
+  }, [currentCardIndex]);
 
-  const flipCard = () => {
+  const flipCard = useCallback(() => {
     setIsFlipped(!isFlipped);
-  };
+  }, [isFlipped]);
 
   const toggleFolder = (folder) => {
     const newExpandedFolders = new Set(expandedFolders);
@@ -498,6 +498,8 @@ const Flashcards = ({ initialContent = '', initialFilename = null }) => {
           e.preventDefault();
           stopPracticeMode();
           break;
+        default:
+          break;
       }
     };
 
@@ -505,7 +507,7 @@ const Flashcards = ({ initialContent = '', initialFilename = null }) => {
       document.addEventListener('keydown', handleKeyPress);
       return () => document.removeEventListener('keydown', handleKeyPress);
     }
-  }, [practiceMode, currentCardIndex, isFlipped]);
+  }, [practiceMode, currentCardIndex, isFlipped, flipCard, nextCard, previousCard, stopPracticeMode]);
 
   return (
     <div className="space-y-6">

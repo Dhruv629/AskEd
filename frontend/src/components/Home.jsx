@@ -8,7 +8,7 @@ const Home = ({ onNavigateToSummarizer, onNavigateToFlashcards }) => {
   const [pdfFile, setPdfFile] = useState(null);
   const [uploadedFilename, setUploadedFilename] = useState('');
   const [extractedText, setExtractedText] = useState('');
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false); // Removed unused variable
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
 

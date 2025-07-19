@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import Summarizer from './components/Summarizer';
 import Flashcards from './components/Flashcards';
 import Home from './components/Home';
 import AuthContainer from './components/AuthContainer';
 
-const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL
-});
+// API configuration moved to utils/api.js
 
 
 const App = () => {
