@@ -53,19 +53,19 @@ const Flashcards = ({ initialContent = '', initialFilename = null }) => {
   }, [initialContent, initialFilename]);
 
   // Get authentication token
-  const getAuthToken = () => {
+  const getAuthToken = useCallback(() => {
     return localStorage.getItem('token');
-  };
+  }, []);
 
   // Add authorization header to axios requests
-  const getAuthHeaders = () => {
+  const getAuthHeaders = useCallback(() => {
     const token = getAuthToken();
     console.log('Auth token:', token ? 'Present' : 'Missing');
     return {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     };
-  };
+  }, [getAuthToken]);
 
   const loadSavedFlashcards = useCallback(async () => {
     try {
@@ -393,20 +393,21 @@ const Flashcards = ({ initialContent = '', initialFilename = null }) => {
     });
   };
 
+  // Handle logout cleanup
+  const handleLogout = useCallback(() => {
+    setGeneratedFlashcards({});
+    setSelectedGeneratedSet(null);
+  }, []);
+
   // Cleanup generated flashcards on logout
   useEffect(() => {
-    const handleLogout = () => {
-      setGeneratedFlashcards({});
-      setSelectedGeneratedSet(null);
-    };
-
     // Listen for logout events (you can trigger this from your auth component)
     window.addEventListener('logout', handleLogout);
     
     return () => {
       window.removeEventListener('logout', handleLogout);
     };
-  }, []);
+  }, [handleLogout]);
 
   // Utility function to trigger logout cleanup (call this from your auth component)
   // const triggerLogoutCleanup = () => { // Removed unused function
@@ -416,12 +417,12 @@ const Flashcards = ({ initialContent = '', initialFilename = null }) => {
   // NOTE: To trigger logout cleanup from your auth component, call:
   // window.dispatchEvent(new Event('logout'));
 
-  const getFlashcardsByFolder = (folder) => {
+  const getFlashcardsByFolder = useCallback((folder) => {
     return savedFlashcards.filter(card => card.folder === folder);
-  };
+  }, [savedFlashcards]);
 
   // Practice Mode Functions
-  const startPracticeMode = (folder = null) => {
+  const startPracticeMode = useCallback((folder = null) => {
     let cardsToPractice;
     if (folder) {
       cardsToPractice = getFlashcardsByFolder(folder);
@@ -438,7 +439,7 @@ const Flashcards = ({ initialContent = '', initialFilename = null }) => {
     setCurrentCardIndex(0);
     setIsFlipped(false);
     setPracticeMode(true);
-  };
+  }, [getFlashcardsByFolder, savedFlashcards]);
 
   const stopPracticeMode = useCallback(() => {
     setPracticeMode(false);
