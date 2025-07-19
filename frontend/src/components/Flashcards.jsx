@@ -67,6 +67,21 @@ const Flashcards = ({ initialContent = '', initialFilename = null }) => {
     };
   };
 
+  const loadSavedFlashcards = useCallback(async () => {
+    try {
+      const response = await axios.get(getApiUrl('/db/flashcards'), {
+        headers: getAuthHeaders()
+      });
+      setSavedFlashcards(response.data);
+      
+      // Extract unique folders
+      const uniqueFolders = [...new Set(response.data.map(card => card.folder).filter(Boolean))];
+      setFolders(uniqueFolders);
+    } catch (err) {
+      console.error('Failed to load saved flashcards:', err);
+    }
+  }, [getAuthHeaders]);
+
   // Load user's saved flashcards and folders on component mount
   useEffect(() => {
     loadSavedFlashcards();
@@ -81,21 +96,6 @@ const Flashcards = ({ initialContent = '', initialFilename = null }) => {
     return () => {
       document.head.removeChild(style);
     };
-  }, []);
-
-  const loadSavedFlashcards = useCallback(async () => {
-    try {
-      const response = await axios.get(getApiUrl('/db/flashcards'), {
-        headers: getAuthHeaders()
-      });
-      setSavedFlashcards(response.data);
-      
-      // Extract unique folders
-      const uniqueFolders = [...new Set(response.data.map(card => card.folder).filter(Boolean))];
-      setFolders(uniqueFolders);
-    } catch (err) {
-      console.error('Failed to load saved flashcards:', err);
-    }
   }, []);
 
   const handleGenerateFromText = async (text) => {
