@@ -3,6 +3,7 @@ import Summarizer from './components/Summarizer';
 import Flashcards from './components/Flashcards';
 import Home from './components/Home';
 import AuthContainer from './components/AuthContainer';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // API configuration moved to utils/api.js
 
@@ -77,10 +78,15 @@ const App = () => {
 
   // Show authentication screen if not authenticated
   if (!isAuthenticated) {
-    return <AuthContainer onAuthenticated={handleAuthenticated} darkMode={darkMode} onToggleDarkMode={toggleDarkMode} />;
+    return (
+      <ErrorBoundary>
+        <AuthContainer onAuthenticated={handleAuthenticated} darkMode={darkMode} onToggleDarkMode={toggleDarkMode} />
+      </ErrorBoundary>
+    );
   }
 
   return (
+    <ErrorBoundary>
     <div className={`min-h-screen font-sans flex flex-col transition-colors duration-300 ${
       darkMode 
         ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white' 
@@ -193,6 +199,7 @@ const App = () => {
         &copy; {new Date().getFullYear()} AskEd AI. All rights reserved.
       </footer>
     </div>
+    </ErrorBoundary>
   );
 };
 

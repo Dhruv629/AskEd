@@ -33,7 +33,8 @@ const Login = ({ onLogin, onSwitchToRegister, darkMode = false }) => {
       // Call parent callback
       onLogin(token, username);
     } catch (err) {
-      setError(err.response?.data || 'Login failed. Please try again.');
+      const errorMessage = err.response?.data?.message || err.response?.data || 'Login failed. Please try again.';
+      setError(typeof errorMessage === 'string' ? errorMessage : 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }

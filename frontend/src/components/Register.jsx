@@ -54,7 +54,8 @@ const Register = ({ onRegister, onSwitchToLogin, darkMode = false }) => {
       // Call parent callback
       onRegister(token, username);
     } catch (err) {
-      setError(err.response?.data || 'Registration failed. Please try again.');
+      const errorMessage = err.response?.data?.message || err.response?.data || 'Registration failed. Please try again.';
+      setError(typeof errorMessage === 'string' ? errorMessage : 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }
