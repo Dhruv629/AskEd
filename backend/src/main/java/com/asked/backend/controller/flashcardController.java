@@ -4,7 +4,7 @@ import com.asked.backend.model.flashcard;
 import com.asked.backend.model.flashcardRepository;
 import com.asked.backend.model.User;
 import com.asked.backend.model.UserRepository;
-import com.asked.backend.services.openRouterservice;
+import com.asked.backend.services.OpenRouterService;
 import com.asked.backend.utils.JwtUtil;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -30,7 +30,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class flashcardController {
 
     @Autowired
-    private openRouterservice openRouterservice;
+    private OpenRouterService openRouterservice;
 
     @Autowired
     private flashcardRepository flashcardRepository;

@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class OpenRouterServiceTest {
 
     @Autowired
-    private openRouterservice openRouterService;
+    private OpenRouterService openRouterService;
 
     @Test
     void testSummarizeText() {

@@ -2,7 +2,7 @@ package com.asked.backend.controller;
 
 
 import com.asked.backend.dto.QuizRequest;
-import com.asked.backend.services.openRouterservice;
+import com.asked.backend.services.OpenRouterService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,7 @@ import java.util.Map;
 public class quizController {
 
     @Autowired
-    private openRouterservice openRouterservice;
+    private OpenRouterService openRouterservice;
 
 
     @PostMapping("/save-quiz")

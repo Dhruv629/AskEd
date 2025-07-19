@@ -1,7 +1,7 @@
 package com.asked.backend.controller;
 
 import com.asked.backend.model.flashcard;
-import com.asked.backend.services.openRouterservice;
+import com.asked.backend.services.OpenRouterService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -29,7 +29,7 @@ import static com.asked.backend.utils.fileStoragePaths.UPLOAD_DIR;
 @RestController
 public class uploadController {
     @Autowired
-    private openRouterservice openRouterservice;
+    private OpenRouterService openRouterservice;
 
 
     @PostMapping("/upload")

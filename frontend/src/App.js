@@ -4,6 +4,11 @@ import Flashcards from './components/Flashcards';
 import Home from './components/Home';
 import AuthContainer from './components/AuthContainer';
 
+const api = axios.create({
+  baseURL: process.env.REACT_APP_API_BASE_URL
+});
+
+
 const App = () => {
   const [activeTab, setActiveTab] = useState('home');
   const [isAuthenticated, setIsAuthenticated] = useState(false);

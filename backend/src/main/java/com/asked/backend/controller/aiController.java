@@ -4,7 +4,7 @@ import com.asked.backend.dto.CustomSummarizeRequest;
 import com.asked.backend.dto.QuizRequest;
 import com.asked.backend.dto.SummarizeRequest;
 import com.asked.backend.model.flashcard;
-import com.asked.backend.services.openRouterservice;
+import com.asked.backend.services.OpenRouterService;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import static com.asked.backend.utils.fileStoragePaths.UPLOAD_DIR;
 public class aiController {
 
     @Autowired
-    private openRouterservice openRouterservice;
+    private OpenRouterService openRouterservice;
 
     private static final String UPLOAD_DIR = System.getProperty("user.dir") + "/uploads/";
 

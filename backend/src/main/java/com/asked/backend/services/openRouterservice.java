@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class openRouterservice {
+public class OpenRouterService {
 
     @Value("${openrouter.api.key}")
     private String apiKey;
